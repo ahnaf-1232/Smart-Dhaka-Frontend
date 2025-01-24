@@ -26,14 +26,14 @@ class AdminDashboard extends StatelessWidget {
               crossAxisSpacing: 16,
               children: const [
                 DashboardFeatureCard(
+                  icon: Icons.person_add,
+                  title: 'Create User',
+                  route: '/user-creation',
+                ),
+                DashboardFeatureCard(
                   icon: Icons.people,
                   title: 'User Management',
                   route: '/user-management',
-                ),
-                DashboardFeatureCard(
-                  icon: Icons.assignment_ind,
-                  title: 'Role Assignment',
-                  route: '/role-assignment',
                 ),
                 DashboardFeatureCard(
                   icon: Icons.analytics,

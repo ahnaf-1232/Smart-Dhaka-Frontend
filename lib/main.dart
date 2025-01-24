@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:smart_dhaka_app/config/theme.dart';
 import 'package:smart_dhaka_app/screens/auth/login_screen.dart';
+import 'package:smart_dhaka_app/screens/auth/registration_screen.dart';
 import 'package:smart_dhaka_app/screens/dashboards/resident_dashboard.dart';
 import 'package:smart_dhaka_app/screens/dashboards/service_holder_dashboard.dart';
 import 'package:smart_dhaka_app/screens/dashboards/government_authority_dashboard.dart';
 import 'package:smart_dhaka_app/screens/dashboards/admin_dashboard.dart';
 import 'package:smart_dhaka_app/screens/features/shortest_path_screen.dart';
 import 'package:smart_dhaka_app/screens/features/emergency_support_screen.dart';
+import 'package:smart_dhaka_app/screens/features/user_creation_screen.dart';
 import 'package:smart_dhaka_app/screens/features/utility_management_screen.dart';
 import 'package:smart_dhaka_app/screens/features/complaint_system_screen.dart';
 import 'package:smart_dhaka_app/screens/features/idea_submission_screen.dart';
@@ -28,7 +33,8 @@ import 'package:smart_dhaka_app/screens/features/role_assignment_screen.dart';
 import 'package:smart_dhaka_app/screens/features/system_analytics_screen.dart';
 import 'package:smart_dhaka_app/screens/features/system_settings_screen.dart';
 
-void main() {
+Future<void> main() async {
+  await dotenv.load(fileName: "assets/config/frontend.env");
   runApp(const SmartDhakaApp());
 }
 
@@ -69,6 +75,8 @@ class SmartDhakaApp extends StatelessWidget {
         '/role-assignment': (context) => const RoleAssignmentScreen(),
         '/system-analytics': (context) => const SystemAnalyticsScreen(),
         '/system-settings': (context) => const SystemSettingsScreen(),
+        '/register': (context) => const RegistrationScreen(),
+        '/user-creation': (context) => const UserCreationScreen(),
       },
     );
   }

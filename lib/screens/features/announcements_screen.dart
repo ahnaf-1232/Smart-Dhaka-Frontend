@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dhaka_app/services/announcement_service.dart';
 
 class AnnouncementsScreen extends StatefulWidget {
   const AnnouncementsScreen({Key? key}) : super(key: key);
@@ -10,6 +11,19 @@ class AnnouncementsScreen extends StatefulWidget {
 class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
   String _selectedPriority = 'All';
   bool _notificationsEnabled = true;
+  late Future<List<Map<String, dynamic>>> _announcementsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAnnouncements();
+  }
+
+  void _fetchAnnouncements() {
+    setState(() {
+      _announcementsFuture = AnnouncementService().getAnnouncements();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,21 +58,28 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
             ),
           ),
           Expanded(
-            child: _buildAnnouncementsList(),
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _announcementsFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No announcements found.'));
+                } else {
+                  final announcements = snapshot.data!;
+                  return _buildAnnouncementsList(announcements);
+                }
+              },
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAnnouncementsList() {
-    // TODO: Replace with actual announcement data
-    final announcements = [
-      {'title': 'City-wide power maintenance', 'priority': 'High', 'date': '2023-05-10'},
-      {'title': 'New bus route added', 'priority': 'Medium', 'date': '2023-05-09'},
-      {'title': 'Community cleanup event', 'priority': 'Low', 'date': '2023-05-08'},
-    ];
-
+  Widget _buildAnnouncementsList(List<Map<String, dynamic>> announcements) {
     return ListView.builder(
       itemCount: announcements.length,
       itemBuilder: (context, index) {
@@ -99,7 +120,6 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     setState(() {
       _notificationsEnabled = !_notificationsEnabled;
     });
-    // TODO: Implement push notification toggle logic
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(_notificationsEnabled ? 'Notifications enabled' : 'Notifications disabled'),
@@ -107,4 +127,3 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     );
   }
 }
-

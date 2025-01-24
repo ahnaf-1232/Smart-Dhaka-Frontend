@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dhaka_app/services/announcement_service.dart';
 
 class DraftAnnouncementsScreen extends StatefulWidget {
   const DraftAnnouncementsScreen({Key? key}) : super(key: key);
 
   @override
-  _DraftAnnouncementsScreenState createState() => _DraftAnnouncementsScreenState();
+  _DraftAnnouncementsScreenState createState() =>
+      _DraftAnnouncementsScreenState();
 }
 
 class _DraftAnnouncementsScreenState extends State<DraftAnnouncementsScreen> {
@@ -17,7 +19,7 @@ class _DraftAnnouncementsScreenState extends State<DraftAnnouncementsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Draft Announcement'),
+        title: const Text('Manage Announcement'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -85,18 +87,32 @@ class _DraftAnnouncementsScreenState extends State<DraftAnnouncementsScreen> {
     );
   }
 
-  void _submitAnnouncement() {
+  void _submitAnnouncement() async {
     if (_formKey.currentState!.validate()) {
-      // TODO: Implement announcement submission logic
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Announcement submitted successfully')),
-      );
-      // Clear form fields after submission
-      _titleController.clear();
-      _contentController.clear();
-      setState(() {
-        _selectedPriority = 'Medium';
-      });
+      final announcementService = AnnouncementService();
+
+      try {
+        await announcementService.submitAnnouncement(
+          _titleController.text,
+          _contentController.text,
+          _selectedPriority,
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Announcement submitted successfully')),
+        );
+
+        // Clear form fields after submission
+        _titleController.clear();
+        _contentController.clear();
+        setState(() {
+          _selectedPriority = 'Medium';
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to submit announcement: $e')),
+        );
+      }
     }
   }
 
@@ -107,4 +123,3 @@ class _DraftAnnouncementsScreenState extends State<DraftAnnouncementsScreen> {
     super.dispose();
   }
 }
-

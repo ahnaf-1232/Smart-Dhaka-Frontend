@@ -28,11 +28,11 @@ class ResidentDashboard extends StatelessWidget {
             title: 'Emergency Support',
             route: '/emergency-support',
           ),
-          DashboardFeatureCard(
-            icon: Icons.electric_bolt,
-            title: 'Utility Management',
-            route: '/utility-management',
-          ),
+          // DashboardFeatureCard(
+          //   icon: Icons.electric_bolt,
+          //   title: 'Utility Management',
+          //   route: '/utility-management',
+          // ),
           DashboardFeatureCard(
             icon: Icons.report_problem,
             title: 'Complaint System',
