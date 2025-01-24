@@ -35,7 +35,7 @@ class PerformanceMetricsScreen extends StatelessWidget {
           children: [
             Text(
               'Performance Summary',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             Row(
@@ -57,13 +57,13 @@ class PerformanceMetricsScreen extends StatelessWidget {
       children: [
         Text(
           value,
-          style: Theme.of(context).textTheme.headline5?.copyWith(
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
         ),
         Text(
           label,
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
     );
@@ -78,7 +78,7 @@ class PerformanceMetricsScreen extends StatelessWidget {
           children: [
             Text(
               'Task Completion Rate',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -137,7 +137,7 @@ class PerformanceMetricsScreen extends StatelessWidget {
           children: [
             Text(
               'Average Response Time',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             SizedBox(

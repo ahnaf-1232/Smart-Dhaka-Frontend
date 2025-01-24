@@ -62,7 +62,7 @@ class ServiceHolderDashboard extends StatelessWidget {
           children: [
             Text(
               'Task Summary',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             Row(
@@ -84,14 +84,14 @@ class ServiceHolderDashboard extends StatelessWidget {
       children: [
         Text(
           value,
-          style: Theme.of(context).textTheme.headline4?.copyWith(
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               color: color.withOpacity(0.8),
               fontWeight: FontWeight.bold,
             ),
         ),
         Text(
           label,
-          style: Theme.of(context).textTheme.subtitle1?.copyWith(
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: Colors.black87,
               ),
         ),

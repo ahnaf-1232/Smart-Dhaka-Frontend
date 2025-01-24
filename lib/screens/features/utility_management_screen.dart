@@ -43,7 +43,7 @@ class UtilityManagementScreen extends StatelessWidget {
               children: [
                 Icon(icon, size: 32, color: Theme.of(context).primaryColor),
                 const SizedBox(width: 16),
-                Text(title, style: Theme.of(context).textTheme.headline6),
+                Text(title, style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 16),

@@ -16,7 +16,7 @@ class EmergencySupportScreen extends StatelessWidget {
           children: [
             Text(
               'Select Emergency Type',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             ElevatedButton.icon(

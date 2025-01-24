@@ -89,7 +89,7 @@ class GovernmentAuthorityDashboard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               title,
-              style: Theme.of(context).textTheme.subtitle1?.copyWith(
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Colors.black87,
                 ),
               textAlign: TextAlign.center,
@@ -97,7 +97,7 @@ class GovernmentAuthorityDashboard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               value,
-              style: Theme.of(context).textTheme.headline4?.copyWith(
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   color: color.withOpacity(0.8),
                   fontWeight: FontWeight.bold,
                 ),

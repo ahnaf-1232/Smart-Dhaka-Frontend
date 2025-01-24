@@ -24,7 +24,7 @@ class _UserCreationScreenState extends State<UserCreationScreen> {
           children: [
             Text(
               'Select User Type',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             DropdownButton<String>(

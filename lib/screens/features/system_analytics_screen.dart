@@ -35,7 +35,7 @@ class SystemAnalyticsScreen extends StatelessWidget {
           children: [
             Text(
               'System Summary',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             Row(
@@ -57,13 +57,13 @@ class SystemAnalyticsScreen extends StatelessWidget {
       children: [
         Text(
           value,
-          style: Theme.of(context).textTheme.headline5?.copyWith(
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
         ),
         Text(
           label,
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
     );
@@ -78,7 +78,7 @@ class SystemAnalyticsScreen extends StatelessWidget {
           children: [
             Text(
               'User Activity',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             SizedBox(
@@ -155,7 +155,7 @@ class SystemAnalyticsScreen extends StatelessWidget {
           children: [
             Text(
               'System Performance',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             SizedBox(

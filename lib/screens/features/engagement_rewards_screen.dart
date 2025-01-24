@@ -34,12 +34,12 @@ class EngagementRewardsScreen extends StatelessWidget {
           children: [
             Text(
               'Your Points',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
               '1,250',
-              style: Theme.of(context).textTheme.headline4?.copyWith(
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: Theme.of(context).primaryColor,
                   ),
             ),
@@ -68,7 +68,7 @@ class EngagementRewardsScreen extends StatelessWidget {
           children: [
             Text(
               'Leaderboard',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             ListView.builder(
@@ -106,7 +106,7 @@ class EngagementRewardsScreen extends StatelessWidget {
           children: [
             Text(
               'Rewards Earned',
-              style: Theme.of(context).textTheme.headline6,
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             ListView.builder(
