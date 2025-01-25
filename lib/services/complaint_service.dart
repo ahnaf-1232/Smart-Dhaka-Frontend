@@ -85,6 +85,9 @@ class ComplaintService {
                   'votes': complaint['votes'],
                   'status': complaint['status'],
                   'hasVoted': complaint['hasVoted'],
+                  'address': complaint['address'],
+                  'lat': complaint['lat'],
+                  'lng': complaint['lng'],
                 })
             .toList();
       } else {

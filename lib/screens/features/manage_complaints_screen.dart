@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dhaka_app/screens/features/complaint_details.dart';
 
 class ManageComplaintsScreen extends StatefulWidget {
   const ManageComplaintsScreen({Key? key}) : super(key: key);
@@ -48,13 +49,19 @@ class _ManageComplaintsScreenState extends State<ManageComplaintsScreen> {
                   ),
                 ],
               ),
+              // onTap: () {
+              //   Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => ComplaintDetailScreen(
+              //         complaint: complaint,
+              //       ),
+              //     ),
+              //   );
+              // },
             ),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addNewComplaint,
-        child: const Icon(Icons.add),
       ),
     );
   }

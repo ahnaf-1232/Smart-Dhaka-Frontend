@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:smart_dhaka_app/screens/features/idea_details.dart';
 import 'package:smart_dhaka_app/services/idea_service.dart';
 import 'package:smart_dhaka_app/services/voting_service.dart';
 
@@ -218,6 +219,16 @@ class _MyIdeasTabState extends State<MyIdeasTab> {
                       Text('${idea['votes']} votes'),
                     ],
                   ),
+                  onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => IdeaDetailScreen(
+                            idea: idea,
+                          ),
+                        ),
+                      );
+                    },
                 ),
               );
             },
@@ -302,6 +313,16 @@ class _AllIdeasTabState extends State<AllIdeasTab> {
                       ),
                     ],
                   ),
+                  onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => IdeaDetailScreen(
+                            idea: idea,
+                          ),
+                        ),
+                      );
+                    },
                 ),
               );
             },

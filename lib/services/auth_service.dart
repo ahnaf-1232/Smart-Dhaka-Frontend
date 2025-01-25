@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:smart_dhaka_app/models/user.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -6,6 +7,8 @@ import 'dart:convert';
 class AuthService {
   final String baseUrl;
   AuthService() : baseUrl = dotenv.env['API_URL']!;
+
+  final _secureStorage = const FlutterSecureStorage();
 
   Future<Map<String, dynamic>?> login(
       String email, String password, String userType) async {
@@ -47,12 +50,6 @@ class AuthService {
       print('An error occurred during login: $e');
       return null;
     }
-  }
-
-  Future<void> logout() async {
-    // TODO: Implement logout logic
-    await Future.delayed(
-        const Duration(seconds: 1)); // Simulating network delay
   }
 
   Future<void> register(
@@ -154,6 +151,41 @@ class AuthService {
 
     if (response.statusCode != 201) {
       throw Exception('Failed to create Authority user: ${response.body}');
+    }
+  }
+
+  Future<String?> validateToken() async {
+    final token = await _secureStorage.read(key: 'authToken');
+
+    if (token == null) {
+      return null; // No token available
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/auth/validate-token'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      return responseData['role'];
+    } else {
+      await logout(); // Token invalid, log out the user
+      return null;
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      // Clear the token from secure storage
+      await _secureStorage.delete(key: 'authToken');
+      print('User logged out successfully');
+    } catch (e) {
+      print('Error during logout: $e');
+      throw Exception('Logout failed');
     }
   }
 }

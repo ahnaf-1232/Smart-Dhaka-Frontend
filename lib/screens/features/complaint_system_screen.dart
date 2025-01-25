@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:smart_dhaka_app/screens/features/complaint_details.dart';
 import 'package:smart_dhaka_app/services/complaint_service.dart';
 import 'package:smart_dhaka_app/services/voting_service.dart';
 
@@ -281,6 +282,15 @@ class _MyComplaintsTabState extends State<MyComplaintsTab> {
                       Text('${complaint['votes']} votes'),
                     ],
                   ),
+                  onTap: () {
+                    print("complaint: $complaint");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ComplaintDetailScreen(complaint: complaint,),
+                      ),
+                    );
+                  },
                 ),
               );
             },
@@ -367,6 +377,14 @@ class _AllComplaintsTabState extends State<AllComplaintsTab> {
                       ),
                     ],
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ComplaintDetailScreen(complaint: complaint,),
+                      ),
+                    );
+                  },
                 ),
               );
             },

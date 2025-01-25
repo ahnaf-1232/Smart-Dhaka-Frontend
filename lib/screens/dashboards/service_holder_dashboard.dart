@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dhaka_app/services/auth_service.dart';
 import 'package:smart_dhaka_app/widgets/dashboard_feature_card.dart';
 
 class ServiceHolderDashboard extends StatelessWidget {
@@ -10,6 +11,12 @@ class ServiceHolderDashboard extends StatelessWidget {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text('Service Holder Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => _logout(context),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -79,15 +86,16 @@ class ServiceHolderDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildTaskStatistic(BuildContext context, String label, String value, Color color) {
+  Widget _buildTaskStatistic(
+      BuildContext context, String label, String value, Color color) {
     return Column(
       children: [
         Text(
           value,
           style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-              color: color.withOpacity(0.8),
-              fontWeight: FontWeight.bold,
-            ),
+                color: color.withOpacity(0.8),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         Text(
           label,
@@ -98,5 +106,19 @@ class ServiceHolderDashboard extends StatelessWidget {
       ],
     );
   }
-}
 
+  void _logout(BuildContext context) async {
+    final authService = AuthService();
+
+    try {
+      await authService.logout();
+
+      // Navigate to the login screen
+      Navigator.of(context).pushReplacementNamed('/');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to log out: $e')),
+      );
+    }
+  }
+}

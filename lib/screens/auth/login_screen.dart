@@ -23,6 +23,35 @@ class _LoginScreenState extends State<LoginScreen> {
   final List<String> _userTypes = ['Admin', 'Service Holder', 'Authority', 'Resident'];
 
   @override
+  void initState() {
+    super.initState();
+    _checkAuthState();
+  }
+
+  Future<void> _checkAuthState() async {
+    final role = await _authService.validateToken();
+
+    if (role != null) {
+      switch (role) {
+        case 'Resident':
+          Navigator.of(context).pushReplacementNamed('/resident-dashboard');
+          break;
+        case 'Admin':
+          Navigator.of(context).pushReplacementNamed('/admin-dashboard');
+          break;
+        case 'ServiceHolder':
+          Navigator.of(context).pushReplacementNamed('/service-holder-dashboard');
+          break;
+        case 'Authority':
+          Navigator.of(context).pushReplacementNamed('/government-authority-dashboard');
+          break;
+        default:
+          Navigator.of(context).pushReplacementNamed('/login');
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dhaka_app/screens/features/feedback_details.dart';
+import 'package:smart_dhaka_app/services/feedback_service.dart';
 
 class ViewFeedbackScreen extends StatefulWidget {
   const ViewFeedbackScreen({Key? key}) : super(key: key);
@@ -8,11 +10,14 @@ class ViewFeedbackScreen extends StatefulWidget {
 }
 
 class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
-  final List<Map<String, dynamic>> _feedbackList = [
-    {'id': 1, 'user': 'John Doe', 'content': 'Great initiative! The app is very helpful.', 'rating': 5},
-    {'id': 2, 'user': 'Jane Smith', 'content': 'The complaint system needs improvement.', 'rating': 3},
-    {'id': 3, 'user': 'Mike Johnson', 'content': 'Love the real-time updates on public transport.', 'rating': 4},
-  ];
+  late Future<List<Map<String, dynamic>>> _feedbackFuture;
+  final FeedbackService _feedbackService = FeedbackService();
+
+  @override
+  void initState() {
+    super.initState();
+    _feedbackFuture = _feedbackService.getAllFeedbacks();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,39 +25,66 @@ class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
       appBar: AppBar(
         title: const Text('View Feedback'),
       ),
-      body: ListView.builder(
-        itemCount: _feedbackList.length,
-        itemBuilder: (context, index) {
-          final feedback = _feedbackList[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ListTile(
-              title: Text(feedback['user']),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(feedback['content']),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      ...List.generate(
-                        5,
-                        (index) => Icon(
-                          index < feedback['rating'] ? Icons.star : Icons.star_border,
-                          size: 16,
-                          color: Colors.amber,
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _feedbackFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No feedbacks found.'));
+          } else {
+            final feedbackList = snapshot.data!;
+            return ListView.builder(
+              itemCount: feedbackList.length,
+              itemBuilder: (context, index) {
+                final feedback = feedbackList[index];
+                return Card(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: ListTile(
+                    title: Text(feedback['feedbackGiverName'] ?? 'Anonymous'),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(feedback['content']),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            ...List.generate(
+                              5,
+                              (i) => Icon(
+                                i < feedback['rating']
+                                    ? Icons.star
+                                    : Icons.star_border,
+                                size: 16,
+                                color: Colors.amber,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.reply),
+                      onPressed: () => _replyToFeedback(feedback['id']),
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FeedbackDetailScreen(
+                            feedback: feedback,
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                ],
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.reply),
-                onPressed: () => _replyToFeedback(feedback['id']),
-              ),
-            ),
-          );
+                );
+              },
+            );
+          }
         },
       ),
     );
@@ -65,4 +97,3 @@ class _ViewFeedbackScreenState extends State<ViewFeedbackScreen> {
     );
   }
 }
-

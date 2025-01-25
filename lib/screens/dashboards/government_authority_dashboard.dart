@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dhaka_app/services/auth_service.dart';
 import 'package:smart_dhaka_app/widgets/dashboard_feature_card.dart';
 
 class GovernmentAuthorityDashboard extends StatelessWidget {
@@ -9,7 +10,13 @@ class GovernmentAuthorityDashboard extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        title: const Text('Government Authority Dashboard'),
+        title: const Text('Government Authority'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => _logout(context),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -79,7 +86,8 @@ class GovernmentAuthorityDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryCard(BuildContext context, String title, String value, IconData icon, Color color) {
+  Widget _buildSummaryCard(BuildContext context, String title, String value,
+      IconData icon, Color color) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -90,22 +98,36 @@ class GovernmentAuthorityDashboard extends StatelessWidget {
             Text(
               title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Colors.black87,
-                ),
+                    color: Colors.black87,
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 4),
             Text(
               value,
               style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  color: color.withOpacity(0.8),
-                  fontWeight: FontWeight.bold,
-                ),
+                    color: color.withOpacity(0.8),
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ],
         ),
       ),
     );
   }
-}
 
+  void _logout(BuildContext context) async {
+    final authService = AuthService();
+
+    try {
+      await authService.logout();
+
+      // Navigate to the login screen
+      Navigator.of(context).pushReplacementNamed('/');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to log out: $e')),
+      );
+    }
+  }
+}

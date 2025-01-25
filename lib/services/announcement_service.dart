@@ -62,4 +62,16 @@ class AnnouncementService {
       throw Exception('Error occurred while submitting announcement: $e');
     }
   }
+
+  Future<void> updateAnnouncement(String id, String title, String content, String priority) async {
+    // TODO: Implement API call to update announcement
+    await Future.delayed(const Duration(seconds: 1)); // Simulating API call
+    print('Announcement updated: $id, $title, $content, $priority');
+  }
+
+  Future<void> deleteAnnouncement(String id) async {
+    // TODO: Implement API call to delete announcement
+    await Future.delayed(const Duration(seconds: 1)); // Simulating API call
+    print('Announcement deleted: $id');
+  }
 }

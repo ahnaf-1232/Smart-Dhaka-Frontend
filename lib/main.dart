@@ -9,6 +9,7 @@ import 'package:smart_dhaka_app/screens/dashboards/resident_dashboard.dart';
 import 'package:smart_dhaka_app/screens/dashboards/service_holder_dashboard.dart';
 import 'package:smart_dhaka_app/screens/dashboards/government_authority_dashboard.dart';
 import 'package:smart_dhaka_app/screens/dashboards/admin_dashboard.dart';
+import 'package:smart_dhaka_app/screens/features/feedback_screen.dart';
 import 'package:smart_dhaka_app/screens/features/shortest_path_screen.dart';
 import 'package:smart_dhaka_app/screens/features/emergency_support_screen.dart';
 import 'package:smart_dhaka_app/screens/features/user_creation_screen.dart';
@@ -77,6 +78,7 @@ class SmartDhakaApp extends StatelessWidget {
         '/system-settings': (context) => const SystemSettingsScreen(),
         '/register': (context) => const RegistrationScreen(),
         '/user-creation': (context) => const UserCreationScreen(),
+        '/feedback': (context) => const FeedbackScreen(),
       },
     );
   }

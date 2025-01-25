@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dhaka_app/screens/features/announcement_details.dart';
 import 'package:smart_dhaka_app/services/announcement_service.dart';
 
 class AnnouncementsScreen extends StatefulWidget {
@@ -32,7 +33,9 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
         title: const Text('Announcements'),
         actions: [
           IconButton(
-            icon: Icon(_notificationsEnabled ? Icons.notifications_active : Icons.notifications_off),
+            icon: Icon(_notificationsEnabled
+                ? Icons.notifications_active
+                : Icons.notifications_off),
             onPressed: _toggleNotifications,
           ),
         ],
@@ -84,15 +87,24 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
       itemCount: announcements.length,
       itemBuilder: (context, index) {
         final announcement = announcements[index];
-        if (_selectedPriority == 'All' || announcement['priority'] == _selectedPriority) {
+        if (_selectedPriority == 'All' ||
+            announcement['priority'] == _selectedPriority) {
           return Card(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: ListTile(
               title: Text(announcement['title'] as String),
-              subtitle: Text('Priority: ${announcement['priority']} | Date: ${announcement['date']}'),
+              subtitle: Text(
+                  'Priority: ${announcement['priority']} | Date: ${announcement['date']}'),
               leading: _getPriorityIcon(announcement['priority'] as String),
               onTap: () {
-                // TODO: Implement announcement details view
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AnnouncementDetailScreen(
+                      announcement: announcement,
+                    ),
+                  ),
+                );
               },
             ),
           );
@@ -122,7 +134,9 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
     });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(_notificationsEnabled ? 'Notifications enabled' : 'Notifications disabled'),
+        content: Text(_notificationsEnabled
+            ? 'Notifications enabled'
+            : 'Notifications disabled'),
       ),
     );
   }

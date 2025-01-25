@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dhaka_app/services/auth_service.dart';
 import 'package:smart_dhaka_app/widgets/dashboard_feature_card.dart';
 
 class AdminDashboard extends StatelessWidget {
@@ -10,6 +11,12 @@ class AdminDashboard extends StatelessWidget {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text('Admin Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => _logout(context),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -62,15 +69,18 @@ class AdminDashboard extends StatelessWidget {
           children: [
             Text(
               'System Performance',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.headline6,
             ),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildPerformanceMetric(context, 'CPU Usage', '45%', Colors.green),
-                _buildPerformanceMetric(context, 'Memory', '60%', Colors.orange),
-                _buildPerformanceMetric(context, 'Disk Space', '75%', Colors.red),
+                _buildPerformanceMetric(
+                    context, 'CPU Usage', '45%', Colors.green),
+                _buildPerformanceMetric(
+                    context, 'Memory', '60%', Colors.orange),
+                _buildPerformanceMetric(
+                    context, 'Disk Space', '75%', Colors.red),
               ],
             ),
           ],
@@ -79,24 +89,39 @@ class AdminDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildPerformanceMetric(BuildContext context, String label, String value, Color color) {
+  Widget _buildPerformanceMetric(
+      BuildContext context, String label, String value, Color color) {
     return Column(
       children: [
         Text(
           value,
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+          style: Theme.of(context).textTheme.headline4?.copyWith(
                 color: color.withOpacity(0.8),
                 fontWeight: FontWeight.bold,
               ),
         ),
         Text(
           label,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          style: Theme.of(context).textTheme.subtitle1?.copyWith(
                 color: Colors.black87,
               ),
         ),
       ],
     );
   }
-}
 
+  void _logout(BuildContext context) async {
+    final authService = AuthService();
+
+    try {
+      await authService.logout();
+
+      // Navigate to the login screen
+      Navigator.of(context).pushReplacementNamed('/');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to log out: $e')),
+      );
+    }
+  }
+}

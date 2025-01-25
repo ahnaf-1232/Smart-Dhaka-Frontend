@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_dhaka_app/services/auth_service.dart';
 import 'package:smart_dhaka_app/widgets/dashboard_feature_card.dart';
 
 class ResidentDashboard extends StatelessWidget {
@@ -10,6 +11,12 @@ class ResidentDashboard extends StatelessWidget {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text('Resident Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => _logout(context),
+          ),
+        ],
       ),
       body: GridView.count(
         crossAxisCount: 2,
@@ -58,9 +65,28 @@ class ResidentDashboard extends StatelessWidget {
             title: 'Engagement & Rewards',
             route: '/engagement-rewards',
           ),
+          DashboardFeatureCard(
+            icon: Icons.feedback,
+            title: 'Feedback',
+            route: '/feedback',
+          ),
         ],
       ),
     );
   }
-}
 
+  void _logout(BuildContext context) async {
+    final authService = AuthService();
+
+    try {
+      await authService.logout();
+
+      // Navigate to the login screen
+      Navigator.of(context).pushReplacementNamed('/');
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to log out: $e')),
+      );
+    }
+  }
+}
