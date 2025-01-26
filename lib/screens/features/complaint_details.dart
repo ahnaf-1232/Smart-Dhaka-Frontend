@@ -18,8 +18,13 @@ class ComplaintDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              complaint['description'],
+              complaint['title'],
               style: Theme.of(context).textTheme.headline6,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              complaint['description'],
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
             _buildInfoRow('Status', complaint['status']),

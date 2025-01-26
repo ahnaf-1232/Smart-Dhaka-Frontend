@@ -56,12 +56,9 @@ class AuthService {
       String name,
       String email,
       String password,
-      String presentAddress,
-      String permanentAddress,
-      double lat,
-      double lng,
       String nid,
-      String phone) async {
+      String thana,
+      String houseNo) async {
     final String url = '${dotenv.env['API_URL']!}/auth/register';
 
     try {
@@ -69,12 +66,9 @@ class AuthService {
         "name": name,
         "email": email,
         "password": password,
-        "presentAddress": presentAddress,
-        "permanentAddress": permanentAddress,
-        "lat": lat,
-        "lng": lng,
         "nid": nid,
-        "phone": phone,
+        "thana": thana,
+        "houseNo": houseNo,
         "role": "Resident"
       };
 
@@ -118,7 +112,7 @@ class AuthService {
   }
 
   Future<void> createServiceHolderUser(
-      String name, String email, String password, String serviceType) async {
+      String name, String email, String password, String serviceType, String thana, double lat, double lng) async {
     final url = Uri.parse('$baseUrl/auth/create-service-holder');
     final response = await http.post(
       url,
@@ -128,6 +122,9 @@ class AuthService {
         'email': email,
         'password': password,
         'serviceType': serviceType,
+        'thana': thana,
+        'lat': lat,
+        'lng': lng,
       }),
     );
 

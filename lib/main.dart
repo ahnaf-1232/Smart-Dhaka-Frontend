@@ -52,7 +52,7 @@ class SmartDhakaApp extends StatelessWidget {
         '/': (context) => const LoginScreen(),
         '/resident-dashboard': (context) => const ResidentDashboard(),
         '/shortest-path': (context) => const ShortestPathScreen(),
-        '/emergency-support': (context) => const EmergencySupportScreen(),
+        '/emergency-support': (context) =>  EmergencySupportScreen(),
         '/utility-management': (context) => const UtilityManagementScreen(),
         '/complaint-system': (context) => const ComplaintSystemScreen(),
         '/idea-submission': (context) => const IdeaSubmissionScreen(),

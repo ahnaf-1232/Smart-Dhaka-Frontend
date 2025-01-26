@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_dhaka_app/services/auth_service.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:smart_dhaka_app/widgets/thana_selector.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({Key? key}) : super(key: key);
@@ -13,16 +13,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
   final _authService = AuthService();
   final PageController _pageController = PageController();
-  
+
   String _name = '';
   String _email = '';
   String _password = '';
-  String _presentAddress = '';
-  String _permanentAddress = '';
   String _nid = '';
-  String _phone = '';
-  double? _latitude;
-  double? _longitude;
+  String _houseNo = '';
+  String? _selectedThana;
 
   int _currentPage = 0;
   static const _totalPages = 3;
@@ -137,47 +134,28 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Present Address',
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your present address';
-              }
-              return null;
+          ThanaSelector(
+            selectedThana: _selectedThana,
+            onChanged: (value) {
+              setState(() {
+                _selectedThana = value;
+              });
             },
-            onSaved: (value) => _presentAddress = value!,
           ),
           const SizedBox(height: 16),
           TextFormField(
             decoration: const InputDecoration(
-              labelText: 'Permanent Address',
+              labelText: 'House No',
               border: OutlineInputBorder(),
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter your permanent address';
+                return 'Please enter your house number';
               }
               return null;
             },
-            onSaved: (value) => _permanentAddress = value!,
+            onSaved: (value) => _houseNo = value!,
           ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: _getCurrentLocation,
-            icon: const Icon(Icons.location_on),
-            label: const Text('Get Current Location'),
-          ),
-          if (_latitude != null && _longitude != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(
-                'Location: $_latitude, $_longitude',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ),
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () => _nextPage(),
@@ -213,20 +191,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             },
             onSaved: (value) => _nid = value!,
           ),
-          const SizedBox(height: 16),
-          TextFormField(
-            decoration: const InputDecoration(
-              labelText: 'Phone',
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your phone number';
-              }
-              return null;
-            },
-            onSaved: (value) => _phone = value!,
-          ),
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: _submitForm,
@@ -249,41 +213,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 
-  Future<void> _getCurrentLocation() async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-      setState(() {
-        _latitude = position.latitude;
-        _longitude = position.longitude;
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to get current location')),
-      );
-    }
-  }
-
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      if (_latitude == null || _longitude == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please get your current location')),
-        );
-        return;
-      }
       _authService.register(
         _name,
         _email,
         _password,
-        _presentAddress,
-        _permanentAddress,
-        _latitude!,
-        _longitude!,
         _nid,
-        _phone,
+        _selectedThana!,
+        _houseNo,
       ).then((_) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Registration successful! Please login.')),
@@ -297,3 +236,4 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     }
   }
 }
+

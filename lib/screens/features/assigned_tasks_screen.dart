@@ -1,64 +1,108 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:smart_dhaka_app/services/emergnecy_service.dart';
 
-class AssignedTasksScreen extends StatelessWidget {
+class AssignedTasksScreen extends StatefulWidget {
   const AssignedTasksScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> tasks = [
-      {'id': 1, 'title': 'Fix pothole on Main Street', 'priority': 'High', 'dueDate': '2023-05-20'},
-      {'id': 2, 'title': 'Replace streetlight near City Park', 'priority': 'Medium', 'dueDate': '2023-05-22'},
-      {'id': 3, 'title': 'Clean drainage system on 5th Avenue', 'priority': 'Low', 'dueDate': '2023-05-25'},
-    ];
+  _AssignedTasksScreenState createState() => _AssignedTasksScreenState();
+}
 
+class _AssignedTasksScreenState extends State<AssignedTasksScreen> {
+  final EmergencyService _emergencyService = EmergencyService();
+  List<Map<String, dynamic>> _tasks = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAssignedTasks();
+  }
+
+  Future<void> _fetchAssignedTasks() async {
+    try {
+      // Fetch assigned tasks from the API
+      final tasks = await _emergencyService.getAssignedTasks();
+
+      // Filter out tasks with the "Closed" status
+      final filteredTasks = tasks.where((task) => task['status'] != 'Closed').toList();
+
+      // Decode location names
+      final updatedTasks = await Future.wait(filteredTasks.map((task) async {
+        final locationName = await _getLocationName(
+          task['requesterLocation']['lat'],
+          task['requesterLocation']['lng'],
+        );
+        return {
+          ...task,
+          'locationName': locationName,
+        };
+      }));
+
+      setState(() {
+        _tasks = updatedTasks;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch tasks: $e')),
+      );
+    }
+  }
+
+  Future<String> _getLocationName(double lat, double lng) async {
+    try {
+      final placemarks = await placemarkFromCoordinates(lat, lng);
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        return '${place.locality}, ${place.administrativeArea}, ${place.country}';
+      }
+      return 'Unknown location';
+    } catch (e) {
+      return 'Unknown location';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Assigned Tasks'),
       ),
-      body: ListView.builder(
-        itemCount: tasks.length,
-        itemBuilder: (context, index) {
-          final task = tasks[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ListTile(
-              title: Text(task['title']),
-              subtitle: Text('Priority: ${task['priority']} | Due: ${task['dueDate']}'),
-              trailing: IconButton(
-                icon: const Icon(Icons.check_circle_outline),
-                onPressed: () => _markTaskAsComplete(context, task['id']),
-              ),
-              onTap: () => _viewTaskDetails(context, task['id']),
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _addNewTask(context),
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-
-  void _markTaskAsComplete(BuildContext context, int taskId) {
-    // TODO: Implement task completion logic
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Marked task #$taskId as complete')),
-    );
-  }
-
-  void _viewTaskDetails(BuildContext context, int taskId) {
-    // TODO: Implement task details view
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Viewing details for task #$taskId')),
-    );
-  }
-
-  void _addNewTask(BuildContext context) {
-    // TODO: Implement add new task functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Adding a new task')),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _tasks.isEmpty
+              ? const Center(
+                  child: Text(
+                    'No tasks to show.',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: _tasks.length,
+                  itemBuilder: (context, index) {
+                    final task = _tasks[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: ListTile(
+                        title: Text(
+                          "Send Emergency Support Immediately to ${task['requester']['name']}\n",
+                        ),
+                        subtitle: Text(
+                          'Requester name: ${task['requester']['name']} \n'
+                          'Latitude: ${task['requesterLocation']['lat']} | Longitude: ${task['requesterLocation']['lng']}\n'
+                          'Address: ${task['locationName']}\n'
+                          'Phone: ${task['requester']['phone']}',
+                        ),
+                      ),
+                    );
+                  },
+                ),
     );
   }
 }
-

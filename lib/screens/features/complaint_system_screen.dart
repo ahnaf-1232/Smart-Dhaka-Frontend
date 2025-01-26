@@ -5,6 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:smart_dhaka_app/screens/features/complaint_details.dart';
 import 'package:smart_dhaka_app/services/complaint_service.dart';
 import 'package:smart_dhaka_app/services/voting_service.dart';
+import 'package:smart_dhaka_app/widgets/thana_selector.dart';
 
 class ComplaintSystemScreen extends StatefulWidget {
   const ComplaintSystemScreen({Key? key}) : super(key: key);
@@ -81,6 +82,8 @@ class _ComplaintsSubmissionTabState extends State<ComplaintsSubmissionTab> {
   double? _latitude;
   double? _longitude;
   String _address = '';
+  String _title = '';
+  String? _selectedThana;
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +97,15 @@ class _ComplaintsSubmissionTabState extends State<ComplaintsSubmissionTab> {
             child: Column(
               children: [
                 const SizedBox(height: 16),
+                ThanaSelector(
+                  selectedThana: _selectedThana,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedThana = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16),
                 TextFormField(
                   decoration: const InputDecoration(
                     labelText: 'Address',
@@ -106,6 +118,20 @@ class _ComplaintsSubmissionTabState extends State<ComplaintsSubmissionTab> {
                     return null;
                   },
                   onSaved: (value) => _address = value!,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Title',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a title';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) => _title = value!,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -129,7 +155,7 @@ class _ComplaintsSubmissionTabState extends State<ComplaintsSubmissionTab> {
                       child: ElevatedButton.icon(
                         onPressed: _getCurrentLocation,
                         icon: const Icon(Icons.location_on),
-                        label: const Text('Get Current Location'),
+                        label: const Text('Get Current Location (If any)'),
                       ),
                     ),
                   ],
@@ -203,8 +229,9 @@ class _ComplaintsSubmissionTabState extends State<ComplaintsSubmissionTab> {
             _latitude!,
             _longitude!,
             _descriptionController.text,
-            token // Pass the token to the service
-            );
+            _selectedThana!,
+            token,
+            _title);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Complaint submitted successfully!')),
@@ -287,7 +314,9 @@ class _MyComplaintsTabState extends State<MyComplaintsTab> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ComplaintDetailScreen(complaint: complaint,),
+                        builder: (context) => ComplaintDetailScreen(
+                          complaint: complaint,
+                        ),
                       ),
                     );
                   },
@@ -350,8 +379,7 @@ class _AllComplaintsTabState extends State<AllComplaintsTab> {
             itemCount: complaints.length,
             itemBuilder: (context, index) {
               final complaint = complaints[index];
-              final hasVoted =
-                  complaint['hasVoted'] ?? false;
+              final hasVoted = complaint['hasVoted'] ?? false;
 
               return Card(
                 child: ListTile(
@@ -381,7 +409,9 @@ class _AllComplaintsTabState extends State<AllComplaintsTab> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ComplaintDetailScreen(complaint: complaint,),
+                        builder: (context) => ComplaintDetailScreen(
+                          complaint: complaint,
+                        ),
                       ),
                     );
                   },

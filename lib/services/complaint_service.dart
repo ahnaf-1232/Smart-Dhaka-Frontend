@@ -15,7 +15,7 @@ class ComplaintService {
   }
 
   Future<void> submitComplaint(String address, double lat, double lng,
-      String description, String token) async {
+      String description, String thana, String token, String title) async {
     final String url =
         '$baseUrl/complaints/submit'; // Adjust endpoint as needed
 
@@ -25,6 +25,8 @@ class ComplaintService {
         'address': address,
         'lat': lat,
         'lng': lng,
+        'thana': thana,
+        'title': title,
         // 'imageUrl': imageUrl,
         // Add more fields if required by the backend
       };
@@ -96,6 +98,67 @@ class ComplaintService {
       }
     } catch (e) {
       throw Exception('Error fetching complaints: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchComplaintsForAuthority() async {
+    try {
+      // Retrieve the authentication token
+      final String? token = await getAuthToken();
+      if (token == null) {
+        throw Exception('No authentication token found.');
+      }
+
+      // Make the HTTP GET request with the token in the headers
+      final response = await http.get(
+        Uri.parse('$baseUrl/complaints/authority-complaints'),
+        headers: {
+          'Authorization':
+              'Bearer $token', // Include the token in the Authorization header
+          'Content-Type':
+              'application/json', // Optional: Specify the content type
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Parse the response body and return the complaints
+        final data = json.decode(response.body);
+
+        return List<Map<String, dynamic>>.from(data);
+      } else {
+        throw Exception(
+            'Failed to fetch complaints. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching complaints: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> updateComplaintStatus(
+      String complaintId, String status) async {
+        print('complaintId: $complaintId, status: $status');
+    try {
+      final String? token = await getAuthToken(); // Fetch the auth token
+      final response = await http.put(
+        Uri.parse('$baseUrl/complaints/update-status'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({
+          'complaintId': complaintId,
+          'status': status,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception(
+            'Failed to update status. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error updating complaint status: $e');
     }
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_dhaka_app/screens/features/complaint_details.dart';
+import 'package:smart_dhaka_app/screens/features/complaint_status_update.dart';
+import 'package:smart_dhaka_app/services/complaint_service.dart';
 
 class ManageComplaintsScreen extends StatefulWidget {
   const ManageComplaintsScreen({Key? key}) : super(key: key);
@@ -9,11 +11,37 @@ class ManageComplaintsScreen extends StatefulWidget {
 }
 
 class _ManageComplaintsScreenState extends State<ManageComplaintsScreen> {
-  final List<Map<String, dynamic>> _complaints = [
-    {'id': 1, 'title': 'Pothole on Main Street', 'status': 'Pending', 'priority': 'High'},
-    {'id': 2, 'title': 'Broken streetlight near City Park', 'status': 'In Progress', 'priority': 'Medium'},
-    {'id': 3, 'title': 'Garbage not collected on time', 'status': 'Resolved', 'priority': 'Low'},
-  ];
+  late ComplaintService _complaintService;
+  List<Map<String, dynamic>> _complaints = [];
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _complaintService = ComplaintService();
+    _fetchComplaints();
+  }
+
+  Future<void> _fetchComplaints() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      final complaints = await _complaintService.fetchComplaintsForAuthority();
+      print(complaints);
+      setState(() {
+        _complaints = complaints;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching complaints: $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,92 +49,93 @@ class _ManageComplaintsScreenState extends State<ManageComplaintsScreen> {
       appBar: AppBar(
         title: const Text('Manage Complaints'),
       ),
-      body: ListView.builder(
-        itemCount: _complaints.length,
-        itemBuilder: (context, index) {
-          final complaint = _complaints[index];
-          return Card(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ListTile(
-              title: Text(complaint['title']),
-              subtitle: Text('Status: ${complaint['status']} | Priority: ${complaint['priority']}'),
-              trailing: PopupMenuButton<String>(
-                onSelected: (String result) {
-                  _handleComplaintAction(result, complaint['id']);
-                },
-                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-                  const PopupMenuItem<String>(
-                    value: 'view',
-                    child: Text('View Details'),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'update',
-                    child: Text('Update Status'),
-                  ),
-                  const PopupMenuItem<String>(
-                    value: 'assign',
-                    child: Text('Assign to Department'),
-                  ),
-                ],
-              ),
-              // onTap: () {
-              //   Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) => ComplaintDetailScreen(
-              //         complaint: complaint,
-              //       ),
-              //     ),
-              //   );
-              // },
-            ),
-          );
-        },
-      ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _complaints.isEmpty
+              ? const Center(child: Text('No complaints available'))
+              : ListView.builder(
+                  itemCount: _complaints.length,
+                  itemBuilder: (context, index) {
+                    final complaint = _complaints[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      child: ListTile(
+                        title: Text(complaint['title']),
+                        subtitle: Text(
+                          'Status: ${complaint['status']} | Priority: ${complaint['priority']}',
+                        ),
+                        trailing: PopupMenuButton<String>(
+                          onSelected: (String result) {
+                            _handleComplaintAction(result, complaint);
+                          },
+                          itemBuilder: (BuildContext context) =>
+                              <PopupMenuEntry<String>>[
+                            const PopupMenuItem<String>(
+                              value: 'view',
+                              child: Text('View Details'),
+                            ),
+                            const PopupMenuItem<String>(
+                              value: 'update',
+                              child: Text('Update Status'),
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ComplaintDetailScreen(
+                                complaint: complaint,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
     );
   }
 
-  void _handleComplaintAction(String action, int complaintId) {
-    // TODO: Implement actions for viewing details, updating status, and assigning to department
+  void _handleComplaintAction(String action, dynamic complaint) {
     switch (action) {
       case 'view':
-        _viewComplaintDetails(complaintId);
+        _viewComplaintDetails(complaint);
         break;
       case 'update':
-        _updateComplaintStatus(complaintId);
-        break;
-      case 'assign':
-        _assignComplaintToDepartment(complaintId);
+        _updateComplaintStatus(complaint);
         break;
     }
   }
 
-  void _viewComplaintDetails(int complaintId) {
-    // TODO: Implement viewing complaint details
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Viewing details for complaint #$complaintId')),
+  void _viewComplaintDetails(dynamic complaint) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ComplaintDetailScreen(
+          complaint: complaint,
+        ),
+      ),
     );
   }
 
-  void _updateComplaintStatus(int complaintId) {
-    // TODO: Implement updating complaint status
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Updating status for complaint #$complaintId')),
+  void _updateComplaintStatus(Map<String, dynamic> complaint) async {
+    final updatedComplaint = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ComplaintStatusUpdateScreen(complaint: complaint),
+      ),
     );
-  }
 
-  void _assignComplaintToDepartment(int complaintId) {
-    // TODO: Implement assigning complaint to department
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Assigning complaint #$complaintId to department')),
-    );
-  }
-
-  void _addNewComplaint() {
-    // TODO: Implement adding a new complaint
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Adding a new complaint')),
-    );
+    if (updatedComplaint != null) {
+      setState(() {
+        final index =
+            _complaints.indexWhere((c) => c['id'] == updatedComplaint['id']);
+        if (index != -1) {
+          _complaints[index] = updatedComplaint;
+        }
+      });
+    }
   }
 }
-

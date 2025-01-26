@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:smart_dhaka_app/services/auth_service.dart';
+import 'package:smart_dhaka_app/widgets/thana_selector.dart';
 
 class UserCreationScreen extends StatefulWidget {
   const UserCreationScreen({Key? key}) : super(key: key);
@@ -155,6 +157,25 @@ class _ServiceHolderUserFormState extends State<ServiceHolderUserForm> {
   final TextEditingController _passwordController = TextEditingController();
   String _selectedServiceType = 'Hospital';
   final List<String> _serviceTypes = ['Hospital', 'Police Station', 'Fire Service'];
+  String? _selectedThana;
+  double? _latitude;
+  double? _longitude;
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      setState(() {
+        _latitude = position.latitude;
+        _longitude = position.longitude;
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to get current location')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -217,6 +238,35 @@ class _ServiceHolderUserFormState extends State<ServiceHolderUserForm> {
               return null;
             },
           ),
+          const SizedBox(height: 24),
+          ThanaSelector(
+            selectedThana: _selectedThana,
+            onChanged: (value) {
+              setState(() {
+                _selectedThana = value;
+              });
+            },
+          ),
+          const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: _getCurrentLocation,
+                        icon: const Icon(Icons.location_on),
+                        label: const Text('Get Current Location (If any)'),
+                      ),
+                    ),
+                  ],
+                ),
+                if (_latitude != null && _longitude != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(
+                      'Location: $_latitude, $_longitude',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ),
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () async {
@@ -227,6 +277,9 @@ class _ServiceHolderUserFormState extends State<ServiceHolderUserForm> {
                     _emailController.text,
                     _passwordController.text,
                     _selectedServiceType,
+                    _selectedThana!,
+                    _latitude!,
+                    _longitude!,
                   );
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Service Holder user created successfully')),
