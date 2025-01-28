@@ -42,16 +42,16 @@ class AdminDashboard extends StatelessWidget {
                   title: 'User Management',
                   route: '/user-management',
                 ),
-                DashboardFeatureCard(
-                  icon: Icons.analytics,
-                  title: 'System Analytics',
-                  route: '/system-analytics',
-                ),
-                DashboardFeatureCard(
-                  icon: Icons.settings,
-                  title: 'System Settings',
-                  route: '/system-settings',
-                ),
+                // DashboardFeatureCard(
+                //   icon: Icons.analytics,
+                //   title: 'System Analytics',
+                //   route: '/system-analytics',
+                // ),
+                // DashboardFeatureCard(
+                //   icon: Icons.settings,
+                //   title: 'System Settings',
+                //   route: '/system-settings',
+                // ),
               ],
             ),
           ],

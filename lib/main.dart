@@ -10,6 +10,7 @@ import 'package:smart_dhaka_app/screens/dashboards/service_holder_dashboard.dart
 import 'package:smart_dhaka_app/screens/dashboards/government_authority_dashboard.dart';
 import 'package:smart_dhaka_app/screens/dashboards/admin_dashboard.dart';
 import 'package:smart_dhaka_app/screens/features/feedback_screen.dart';
+import 'package:smart_dhaka_app/screens/features/manage_ideas_screen.dart';
 import 'package:smart_dhaka_app/screens/features/shortest_path_screen.dart';
 import 'package:smart_dhaka_app/screens/features/emergency_support_screen.dart';
 import 'package:smart_dhaka_app/screens/features/user_creation_screen.dart';
@@ -52,7 +53,7 @@ class SmartDhakaApp extends StatelessWidget {
         '/': (context) => const LoginScreen(),
         '/resident-dashboard': (context) => const ResidentDashboard(),
         '/shortest-path': (context) => const ShortestPathScreen(),
-        '/emergency-support': (context) =>  EmergencySupportScreen(),
+        '/emergency-support': (context) =>  const EmergencySupportScreen(),
         '/utility-management': (context) => const UtilityManagementScreen(),
         '/complaint-system': (context) => const ComplaintSystemScreen(),
         '/idea-submission': (context) => const IdeaSubmissionScreen(),
@@ -79,6 +80,7 @@ class SmartDhakaApp extends StatelessWidget {
         '/register': (context) => const RegistrationScreen(),
         '/user-creation': (context) => const UserCreationScreen(),
         '/feedback': (context) => const FeedbackScreen(),
+        '/manage-ideas': (context) => const ManageIdeasScreen(),
       },
     );
   }

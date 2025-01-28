@@ -38,15 +38,19 @@ class GovernmentAuthorityDashboard extends StatelessWidget {
                   route: '/manage-complaints',
                 ),
                 DashboardFeatureCard(
+                    icon: Icons.lightbulb,
+                    title: 'Manage Ideas',
+                    route: '/manage-ideas'),
+                DashboardFeatureCard(
                   icon: Icons.announcement,
                   title: 'Draft Announcements',
                   route: '/draft-announcements',
                 ),
-                DashboardFeatureCard(
-                  icon: Icons.analytics,
-                  title: 'City Analytics',
-                  route: '/city-analytics',
-                ),
+                // DashboardFeatureCard(
+                //   icon: Icons.analytics,
+                //   title: 'City Analytics',
+                //   route: '/city-analytics',
+                // ),
                 DashboardFeatureCard(
                   icon: Icons.feedback,
                   title: 'View Feedback',

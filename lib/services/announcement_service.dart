@@ -37,7 +37,7 @@ class AnnouncementService {
     }
   }
 
-  Future<void> submitAnnouncement(String title, String content, String priority) async {
+  Future<void> submitAnnouncement(String title, String content, String thana, String priority) async {
     final url = Uri.parse('$baseUrl/announcements/add');
     final String? token = await _secureStorage.read(key: 'authToken');
 
@@ -51,6 +51,7 @@ class AnnouncementService {
         body: jsonEncode({
           'title': title,
           'content': content,
+          'thana': thana,
           'priority': priority,
         }),
       );

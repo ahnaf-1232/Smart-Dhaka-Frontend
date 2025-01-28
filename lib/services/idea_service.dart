@@ -14,12 +14,14 @@ class IdeaService {
     return await _secureStorage.read(key: 'authToken');
   }
 
-  Future<void> submitIdea(String description, String token) async {
+  Future<void> submitIdea(
+      String title, String description, String token) async {
     final String url = '$baseUrl/ideas/submit'; // Adjust endpoint as needed
 
     try {
       final Map<String, dynamic> requestBody = {
         'description': description,
+        'title': title,
         // 'imageUrl': imageUrl,
         // Add more fields if required by the backend
       };
@@ -76,6 +78,7 @@ class IdeaService {
             .map((idea) => {
                   '_id': idea['_id'],
                   'id': idea['id'],
+                  'title': idea['title'],
                   'description': idea['description'],
                   'votes': idea['votes'],
                   'status': idea['status'],
@@ -88,6 +91,66 @@ class IdeaService {
       }
     } catch (e) {
       throw Exception('Error fetching ideas: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> fetchIdeasForAuthority() async {
+    try {
+      // Retrieve the authentication token
+      final String? token = await getAuthToken();
+      if (token == null) {
+        throw Exception('No authentication token found.');
+      }
+
+      // Make the HTTP GET request with the token in the headers
+      final response = await http.get(
+        Uri.parse('$baseUrl/ideas/authority-ideas'),
+        headers: {
+          'Authorization':
+              'Bearer $token', // Include the token in the Authorization header
+          'Content-Type':
+              'application/json', // Optional: Specify the content type
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Parse the response body and return the ideas
+        final data = json.decode(response.body);
+
+        return List<Map<String, dynamic>>.from(data);
+      } else {
+        throw Exception(
+            'Failed to fetch ideas. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching ideas: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> updateIdeaStatus(
+      String ideaId, String status) async {
+    try {
+      final String? token = await getAuthToken(); // Fetch the auth token
+      final response = await http.put(
+        Uri.parse('$baseUrl/ideas/update-status'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({
+          'ideaId': ideaId,
+          'status': status,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception(
+            'Failed to update status. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error updating idea status: $e');
     }
   }
 }

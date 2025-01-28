@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smart_dhaka_app/screens/features/announcement_details.dart';
 import 'package:smart_dhaka_app/services/announcement_service.dart';
+import 'package:smart_dhaka_app/widgets/thana_selector.dart';
 
 class DraftAnnouncementsScreen extends StatefulWidget {
   const DraftAnnouncementsScreen({Key? key}) : super(key: key);
@@ -62,6 +63,7 @@ class _SubmitAnnouncementTabState extends State<SubmitAnnouncementTab> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
+  String? _selectedThana;
   String _selectedPriority = 'Medium';
 
   @override
@@ -102,6 +104,15 @@ class _SubmitAnnouncementTabState extends State<SubmitAnnouncementTab> {
               },
             ),
             const SizedBox(height: 16),
+            ThanaSelector(
+            selectedThana: _selectedThana,
+            onChanged: (value) {
+              setState(() {
+                _selectedThana = value;
+              });
+            },
+          ),
+          const SizedBox(height: 16),
             DropdownButtonFormField<String>(
               value: _selectedPriority,
               decoration: const InputDecoration(
@@ -137,6 +148,7 @@ class _SubmitAnnouncementTabState extends State<SubmitAnnouncementTab> {
         await widget.announcementService.submitAnnouncement(
           _titleController.text,
           _contentController.text,
+          _selectedThana!,
           _selectedPriority,
         );
 
@@ -211,7 +223,7 @@ class _MyAnnouncementsTabState extends State<MyAnnouncementsTab> {
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ListTile(
                   title: Text(announcement['title']),
-                  subtitle: Text('Priority: ${announcement['priority']} | Date: ${announcement['date']}'),
+                  subtitle: Text('Priority: ${announcement['priority']} | Date: ${announcement['createdAt']}'),
                   trailing: PopupMenuButton<String>(
                     onSelected: (String result) {
                       if (result == 'edit') {

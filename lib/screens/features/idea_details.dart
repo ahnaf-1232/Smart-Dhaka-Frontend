@@ -7,6 +7,8 @@ class IdeaDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    print(idea);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Idea Details'),
@@ -17,8 +19,13 @@ class IdeaDetailScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              idea['description'],
+              idea['title'],
               style: Theme.of(context).textTheme.headline6,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Details: ${idea['description']}',
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: 16),
             _buildInfoRow('Status', idea['status']),

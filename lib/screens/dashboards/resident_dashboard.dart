@@ -50,11 +50,11 @@ class ResidentDashboard extends StatelessWidget {
             title: 'Idea Submission',
             route: '/idea-submission',
           ),
-          DashboardFeatureCard(
-            icon: Icons.directions_bus,
-            title: 'Public Transport',
-            route: '/public-transport',
-          ),
+          // DashboardFeatureCard(
+          //   icon: Icons.directions_bus,
+          //   title: 'Public Transport',
+          //   route: '/public-transport',
+          // ),
           DashboardFeatureCard(
             icon: Icons.announcement,
             title: 'Announcements',

@@ -71,6 +71,7 @@ class IdeaSubmissionTab extends StatefulWidget {
 
 class _IdeaSubmissionTabState extends State<IdeaSubmissionTab> {
   final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _secureStorage = const FlutterSecureStorage();
 
@@ -86,6 +87,20 @@ class _IdeaSubmissionTabState extends State<IdeaSubmissionTab> {
             child: Column(
               children: [
                 TextFormField(
+                  controller: _titleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Idea Title',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the title of your idea';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
                   controller: _descriptionController,
                   decoration: const InputDecoration(
                     labelText: 'Idea Description',
@@ -94,19 +109,11 @@ class _IdeaSubmissionTabState extends State<IdeaSubmissionTab> {
                   maxLines: 5,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your idea';
+                      return 'Please enter your idea description';
                     }
                     return null;
                   },
                 ),
-                // const SizedBox(height: 16),
-                // ElevatedButton.icon(
-                //   onPressed: () {
-                //     // TODO: Implement file upload functionality
-                //   },
-                //   icon: const Icon(Icons.upload_file),
-                //   label: const Text('Upload Attachment (Optional)'),
-                // ),
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: _submitIdea,
@@ -140,12 +147,18 @@ class _IdeaSubmissionTabState extends State<IdeaSubmissionTab> {
 
         // Call the idea service with the retrieved token
         await ideaService.submitIdea(
-            _descriptionController.text, token // Pass the token to the service
-            );
+          _titleController.text,
+          _descriptionController.text,
+          token, // Pass the token to the service
+        );
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Idea submitted successfully!')),
         );
+
+        // Clear the form fields after submission
+        _titleController.clear();
+        _descriptionController.clear();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to submit Idea: $e')),
@@ -156,6 +169,7 @@ class _IdeaSubmissionTabState extends State<IdeaSubmissionTab> {
 
   @override
   void dispose() {
+    _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
   }
@@ -211,7 +225,7 @@ class _MyIdeasTabState extends State<MyIdeasTab> {
               final idea = ideas[index];
               return Card(
                 child: ListTile(
-                  title: Text(idea['description']),
+                  title: Text(idea['title']),
                   subtitle: Text('Status: ${idea['status']}'),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -220,15 +234,15 @@ class _MyIdeasTabState extends State<MyIdeasTab> {
                     ],
                   ),
                   onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => IdeaDetailScreen(
-                            idea: idea,
-                          ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => IdeaDetailScreen(
+                          idea: idea,
                         ),
-                      );
-                    },
+                      ),
+                    );
+                  },
                 ),
               );
             },
@@ -291,7 +305,7 @@ class _AllIdeasTabState extends State<AllIdeasTab> {
               final hasVoted = idea['hasVoted'] ?? false;
               return Card(
                 child: ListTile(
-                  title: Text(idea['description']),
+                  title: Text(idea['title']),
                   subtitle: Text('Status: ${idea['status']}'),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -304,7 +318,6 @@ class _AllIdeasTabState extends State<AllIdeasTab> {
                         ),
                         onPressed: () {
                           if (!hasVoted) {
-                            print(idea);
                             _voteForIdea(idea['_id']);
                           } else {
                             _removeVoteForIdea(idea['_id']);
@@ -314,15 +327,15 @@ class _AllIdeasTabState extends State<AllIdeasTab> {
                     ],
                   ),
                   onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => IdeaDetailScreen(
-                            idea: idea,
-                          ),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => IdeaDetailScreen(
+                          idea: idea,
                         ),
-                      );
-                    },
+                      ),
+                    );
+                  },
                 ),
               );
             },

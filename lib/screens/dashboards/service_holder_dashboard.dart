@@ -47,11 +47,11 @@ class ServiceHolderDashboard extends StatelessWidget {
                   title: 'Update Service Status',
                   route: '/update-service-status',
                 ),
-                DashboardFeatureCard(
-                  icon: Icons.assessment,
-                  title: 'Performance Metrics',
-                  route: '/performance-metrics',
-                ),
+                // DashboardFeatureCard(
+                //   icon: Icons.assessment,
+                //   title: 'Performance Metrics',
+                //   route: '/performance-metrics',
+                // ),
               ],
             ),
           ],
