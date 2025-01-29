@@ -83,6 +83,7 @@ class ComplaintService {
             .map((complaint) => {
                   '_id': complaint['_id'],
                   'id': complaint['id'],
+                  'title': complaint['title'],
                   'description': complaint['description'],
                   'votes': complaint['votes'],
                   'status': complaint['status'],

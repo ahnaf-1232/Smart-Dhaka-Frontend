@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:smart_dhaka_app/screens/features/idea_details.dart';
 import 'package:smart_dhaka_app/services/idea_service.dart';
@@ -311,18 +312,20 @@ class _AllIdeasTabState extends State<AllIdeasTab> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('${idea['votes']} votes'),
-                      IconButton(
-                        icon: Icon(
-                          Icons.thumb_up,
-                          color: hasVoted ? Colors.blue : Colors.grey,
+                      Flexible(
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.thumb_up,
+                            color: hasVoted ? Colors.blue : Colors.grey,
+                          ),
+                          onPressed: () {
+                            if (!hasVoted) {
+                              _voteForIdea(idea['_id']);
+                            } else {
+                              _removeVoteForIdea(idea['_id']);
+                            }
+                          },
                         ),
-                        onPressed: () {
-                          if (!hasVoted) {
-                            _voteForIdea(idea['_id']);
-                          } else {
-                            _removeVoteForIdea(idea['_id']);
-                          }
-                        },
                       ),
                     ],
                   ),

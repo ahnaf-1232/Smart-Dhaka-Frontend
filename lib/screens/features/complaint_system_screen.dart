@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -299,9 +300,10 @@ class _MyComplaintsTabState extends State<MyComplaintsTab> {
             itemCount: complaints.length,
             itemBuilder: (context, index) {
               final complaint = complaints[index];
+              print(complaint);
               return Card(
                 child: ListTile(
-                  title: Text(complaint['description']),
+                  title: Text(complaint['title']),
                   subtitle: Text('Status: ${complaint['status']}'),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -383,25 +385,28 @@ class _AllComplaintsTabState extends State<AllComplaintsTab> {
 
               return Card(
                 child: ListTile(
-                  title: Text(complaint['description']),
+                  title: Text(complaint['title']),
                   subtitle: Text('Status: ${complaint['status']}'),
                   trailing: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text('${complaint['votes']} votes'),
-                      IconButton(
-                        icon: Icon(
-                          Icons.thumb_up,
-                          color: hasVoted ? Colors.blue : Colors.grey,
+                      Flexible(
+                        child: IconButton(
+                          iconSize: 10,
+                          icon: Icon(
+                            Icons.thumb_up,
+                            size: 24,
+                            color: hasVoted ? Colors.blue : Colors.grey,
+                          ),
+                          onPressed: () {
+                            if (!hasVoted) {
+                              _voteForComplaint(complaint['_id']);
+                            } else {
+                              _removeVoteForComplaint(complaint['_id']);
+                            }
+                          },
                         ),
-                        onPressed: () {
-                          if (!hasVoted) {
-                            print(complaint);
-                            _voteForComplaint(complaint['_id']);
-                          } else {
-                            _removeVoteForComplaint(complaint['_id']);
-                          }
-                        },
                       ),
                     ],
                   ),

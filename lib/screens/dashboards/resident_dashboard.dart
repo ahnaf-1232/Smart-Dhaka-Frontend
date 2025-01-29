@@ -60,11 +60,11 @@ class ResidentDashboard extends StatelessWidget {
             title: 'Announcements',
             route: '/announcements',
           ),
-          DashboardFeatureCard(
-            icon: Icons.emoji_events,
-            title: 'Engagement & Rewards',
-            route: '/engagement-rewards',
-          ),
+          // DashboardFeatureCard(
+          //   icon: Icons.emoji_events,
+          //   title: 'Engagement & Rewards',
+          //   route: '/engagement-rewards',
+          // ),
           DashboardFeatureCard(
             icon: Icons.feedback,
             title: 'Feedback',

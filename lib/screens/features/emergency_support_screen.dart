@@ -73,7 +73,7 @@ class _EmergencySupportScreenState extends State<EmergencySupportScreen>
           ),
           const SizedBox(height: 8),
           ElevatedButton.icon(
-            onPressed: () => _findNearestServiceStation(context, 'Fire'),
+            onPressed: () => _findNearestServiceStation(context, 'Fire Service'),
             icon: const Icon(Icons.local_fire_department),
             label: const Text('Fire'),
           ),
