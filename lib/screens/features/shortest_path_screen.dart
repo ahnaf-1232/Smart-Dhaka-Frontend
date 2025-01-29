@@ -143,7 +143,7 @@ class _ShortestPathScreenState extends State<ShortestPathScreen> {
 
     try {
       final response = await http.get(Uri.parse(
-          'http://10.100.201.63:5000/nearest-entity?category=$_selectedCategory&lat=${_currentPosition!.latitude}&lon=${_currentPosition!.longitude}'));
+          'https://api.projectsbd.me/map/nearest-entity?category=$_selectedCategory&lat=${_currentPosition!.latitude}&lon=${_currentPosition!.longitude}'));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -206,7 +206,7 @@ class _ShortestPathScreenState extends State<ShortestPathScreen> {
     try {
       // Call the API
       final response = await http.get(Uri.parse(
-          'http://10.100.201.63:5000/shortest-paths?origin_lat=$originLat&origin_lon=$originLon&target_lat=$destinationLat&target_lon=$destinationLon'));
+          'https://api.projectsbd.me/map/shortest-paths?origin_lat=$originLat&origin_lon=$originLon&target_lat=$destinationLat&target_lon=$destinationLon'));
 
       if (response.statusCode == 200) {
         // Parse the response body
